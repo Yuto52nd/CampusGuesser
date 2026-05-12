@@ -12,7 +12,7 @@ MAX_ROUNDS = 5
 UPLOAD_FOLDER = "static/images"
 ALLOWED_EXTENSIONS = {"jpg"}
 CHALLENGES = {
-    1: [1, 9, 11, 212, 238],
+    1: [1, 9,10, 11, 212, 238, 253, 254, 255, 256, 257, 258, 259, 260, 278, 279],
     2: [],
 }
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
