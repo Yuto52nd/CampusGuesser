@@ -1,8 +1,8 @@
 import math
 import sqlite3
 import os
-from flask import Flask, render_template, request, redirect, url_for, session, g
-from werkzeug.utils import secure_filename
+from flask import Flask, render_template, request, redirect, url_for, session, g # type: ignore
+from werkzeug.utils import secure_filename # type: ignore
 import random
 
 app = Flask(__name__)
@@ -12,7 +12,8 @@ MAX_ROUNDS = 5
 UPLOAD_FOLDER = "static/images"
 ALLOWED_EXTENSIONS = {"jpg"}
 CHALLENGES = {
-    1: [1, 2, 3, 4, 5],
+    1: [1, 9, 11, 212, 238],
+    2: [],
 }
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 

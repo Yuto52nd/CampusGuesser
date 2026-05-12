@@ -1,23 +1,31 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
-<head>
+  <head>
     <div class="navbar">
-        <a href="{{ url_for('home') }}">Home</a>
-        <a href="{{ url_for('CGGAME') }}">Play</a>
-        <a href="{{ url_for('overview') }}">Overview</a>
-        <a href="{{ url_for('add_location') }}">Add Location</a>
-        
+      <a href="{{ url_for('home') }}">Home</a>
+      <a href="{{ url_for('CGGAME') }}">Play</a>
+      <a href="{{ url_for('overview') }}">Overview</a>
+      <a href="{{ url_for('add_location') }}">Add Location</a>
     </div>
     <title>Challenges</title>
-     <link rel="stylesheet" href="{{ url_for('static', filename='CG.css') }}">
-</head>
-<body>
+    <link rel="stylesheet" href="{{ url_for('static', filename='CG.css') }}" />
+  </head>
+  <body>
     <h1>Select a Challenge</h1>
 
-    <button onclick="window.location.href='{{ url_for('start_challenge', challenge_id=1) }}'">
-        Challenge 1 (Campus Landmarks)
+    <button
+      onclick="window.location.href='{{ url_for('start_challenge', challenge_id=1) }}'"
+    >
+      Challenge 1 (Cinema Confusion)
     </button>
-    <br><br>
-    <button onclick="window.location.href='{{ url_for('home') }}'">Go Back</button>
-</body>
+    <button
+      onclick="window.location.href='{{ url_for('start_challenge', challenge_id=2) }}'"
+    >
+      Challenge 2 (Historical Buildings)
+    </button>
+    <br /><br />
+    <button onclick="window.location.href='{{ url_for('home') }}'">
+      Go Back
+    </button>
+  </body>
 </html>
