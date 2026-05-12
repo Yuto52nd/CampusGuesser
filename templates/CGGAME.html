@@ -1,123 +1,145 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
+  <head>
     <title>CampusGuesser</title>
-    <meta charset="UTF-8">
-    <link rel="stylesheet" href="static/CG.css">
-    <link rel="stylesheet" href="{{ url_for('static', filename='CG.css') }}">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
-          crossorigin=""/>
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-            integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
-            crossorigin=""></script>
-</head>
-<body>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="static/CG.css" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='CG.css') }}" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+      crossorigin=""
+    />
+    <script
+      src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+      integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+      crossorigin=""
+    ></script>
+  </head>
+  <body>
     <h1 class="mainTitle">CampusGuesser</h1>
 
     <h3 class="Round">Round {{ round }} of {{ max_rounds }}</h3>
 
     <div class="flex-container">
-        <!-- Image box with zoom + drag -->
-        <div class="zoom-container">
-            <img id="TotallyRealImage" class="image" src="{{ url_for('static', filename='images/' + image) }}">
-        </div>
+      <!-- Image box with zoom + drag -->
+      <div class="zoom-container">
+        <img
+          id="TotallyRealImage"
+          class="image"
+          src="{{ url_for('static', filename='images/' + image) }}"
+        />
+      </div>
 
-        <!-- Map and guess form -->
-        <div class="map-container">
-            <div id="map"></div>
-            <form action="{{ url_for('guess') }}" method="POST">
-                <input type="hidden" id="latInput" name="lat">
-                <input type="hidden" id="lngInput" name="lng">
-                <button type="submit" id="Guess">Guess</button>
-            </form>
-        </div>
+      <!-- Map and guess form -->
+      <div class="map-container">
+        <div id="map"></div>
+        <form action="{{ url_for('guess') }}" method="POST">
+          <input type="hidden" id="latInput" name="lat" />
+          <input type="hidden" id="lngInput" name="lng" />
+          <button type="submit" id="Guess">Guess</button>
+        </form>
+      </div>
     </div>
 
     <h3 id="score">Score: {{ score }}</h3>
 
     <script>
-        var map = L.map('map').setView([51.29659, 1.061731], 14);
+      var map = L.map("map").setView([51.29659, 1.061731], 14);
 
-        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            maxZoom: 60,
-            attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-        }).addTo(map);
+      L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        maxZoom: 60,
+        attribution:
+          '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+      }).addTo(map);
 
-        var marker = L.marker();
+      var marker = L.marker();
 
-        function onMapClick(e) {
-            marker
-                .setLatLng(e.latlng)
-                .addTo(map);
+      function onMapClick(e) {
+        marker.setLatLng(e.latlng).addTo(map);
 
-            document.getElementById('latInput').value = e.latlng.lat;
-            document.getElementById('lngInput').value = e.latlng.lng;
+        document.getElementById("latInput").value = e.latlng.lat;
+        document.getElementById("lngInput").value = e.latlng.lng;
+      }
+
+      map.on("click", onMapClick);
+
+      const img = document.getElementById("TotallyRealImage");
+      let scale = 1;
+      let translateX = 0,
+        translateY = 0;
+      let lastX = 0,
+        lastY = 0;
+      img.setAttribute("draggable", "false");
+
+      function updateTransform() {
+        const container = document.querySelector(".zoom-container");
+        const rect = container.getBoundingClientRect();
+        const imgWidth = img.clientWidth * scale;
+        const imgHeight = img.clientHeight * scale;
+        const maxTranslateX = Math.max(0, imgWidth - rect.width);
+        const maxTranslateY = Math.max(0, imgHeight - rect.height);
+        translateX = Math.max(
+          -maxTranslateX,
+          Math.min(maxTranslateX, translateX),
+        );
+        translateY = Math.max(
+          -maxTranslateY,
+          Math.min(maxTranslateY, translateY),
+        );
+        img.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
+      }
+
+      // Zoom with mouse wheel
+      img.addEventListener("wheel", function (e) {
+        e.preventDefault();
+        if (e.deltaY < 0) {
+          scale += 0.1;
+        } else {
+          scale -= 0.1;
+        }
+        scale = Math.min(Math.max(1, scale), 4);
+
+        if (scale === 1) {
+          translateX = 0;
+          translateY = 0;
         }
 
-        map.on('click', onMapClick);
+        updateTransform();
+      });
 
-        const img = document.getElementById("TotallyRealImage");
-        let scale = 1;
-        let translateX = 0, translateY = 0;
-        let lastX = 0, lastY = 0;
-        img.setAttribute("draggable", "false");
+      img.addEventListener("mousedown", function (e) {
+        if (scale <= 1) return;
+        isDragging = true;
+        lastX = e.clientX;
+        lastY = e.clientY;
+        img.style.cursor = "grabbing";
+      });
 
+      window.addEventListener("mousemove", function (e) {
+        if (!isDragging || scale <= 1) return;
+        const dx = e.clientX - lastX;
+        const dy = e.clientY - lastY;
+        translateX += dx;
+        translateY += dy;
+        lastX = e.clientX;
+        lastY = e.clientY;
+        updateTransform();
+      });
 
-        function updateTransform() {
-            img.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
-        }
+      window.addEventListener("mouseup", function () {
+        isDragging = false;
+        img.style.cursor = scale > 1 ? "grab" : "zoom-in";
+      });
 
-        // Zoom with mouse wheel
-        img.addEventListener("wheel", function(e) {
-            e.preventDefault();
-            if (e.deltaY < 0) {
-                scale += 0.1;
-            } else {
-                scale -= 0.1;
-            }
-            scale = Math.min(Math.max(1, scale), 4);
-
-            if (scale === 1) {
-                translateX = 0;
-                translateY = 0;
-            }
-
-            updateTransform();
-        });
-
-
-        img.addEventListener("mousedown", function(e) {
-            if (scale <= 1) return;
-            isDragging = true;
-            lastX = e.clientX;
-            lastY = e.clientY;
-            img.style.cursor = "grabbing";
-        });
-
-        window.addEventListener("mousemove", function(e) {
-            if (!isDragging || scale <= 1) return;
-            const dx = e.clientX - lastX;
-            const dy = e.clientY - lastY;
-            translateX += dx;
-            translateY += dy;
-            lastX = e.clientX;
-            lastY = e.clientY;
-            updateTransform();
-        });
-
-        window.addEventListener("mouseup", function() {
-            isDragging = false;
-            img.style.cursor = scale > 1 ? "grab" : "zoom-in";
-        });
-
-        img.addEventListener("dblclick", function() {
-            scale = 1;
-            translateX = 0;
-            translateY = 0;
-            updateTransform();
-            img.style.cursor = "zoom-in";
-        });
+      img.addEventListener("dblclick", function () {
+        scale = 1;
+        translateX = 0;
+        translateY = 0;
+        updateTransform();
+        img.style.cursor = "zoom-in";
+      });
     </script>
-</body>
+  </body>
 </html>

@@ -1,26 +1,22 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
+  <head>
+    <meta charset="UTF-8" />
     <title>CampusGuesser Home</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='CG.css') }}">
-</head>
-<body>
-    <div class="navbar">
-        <a href="{{ url_for('home') }}">Home</a>
-        <a href="{{ url_for('CGGAME') }}">Play</a>
-        <a href="{{ url_for('overview') }}">Overview</a>
-        <a href="{{ url_for('add_location') }}">Add Location</a>
-        
-    </div>
+    <link rel="stylesheet" href="{{ url_for('static', filename='CG.css') }}" />
+  </head>
+  <body>
     <h1 class="mainTitle">Welcome to CampusGuesser!</h1>
     <div class="flex-container">
-        <div>
-            <p>Try to guess the campus locations from images. Click below to start the game!</p>
-            <a class="start" href="{{ url_for('add_location') }}">Add Location</a>
-            <a class="start" href="{{ url_for('challenges') }}">Challenges</a>
-            <a class="start" href="{{ url_for('campus_guesser') }}">Start Game</a>
-        </div>
+      <div>
+        <p>
+          Try to guess the campus locations from images. Click below to start
+          the game!
+        </p>
+        <a class="start" href="{{ url_for('add_location') }}">Add Location</a>
+        <a class="start" href="{{ url_for('challenges') }}">Challenges</a>
+        <a class="start" href="{{ url_for('campus_guesser') }}">Start Game</a>
+      </div>
     </div>
-</body>
+  </body>
 </html>
