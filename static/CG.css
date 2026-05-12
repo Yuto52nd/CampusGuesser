@@ -1,0 +1,190 @@
+:root {
+    --header-h: 11vh;
+    
+    --brand-1: #530620;
+    --brand-2: #a42134;
+    --brand-3: #ec272d;
+    --brand-4: #f06964;
+
+    --ink: #111;
+    --paper: #fff;
+
+    --accent-1: #2c3e50;
+    --accent-1-hover: #1a252f;
+}
+
+@font-face {
+    font-family: "Roboto";
+    src: url("assets/fonts/Roboto-Regular.ttf") format("truetype");
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+.mainTitle {
+    color: rgb(255, 255, 255);
+    text-align: center;
+    font-size: 50px;
+}
+
+.Round {
+    text-align: center;
+}
+
+body {
+    background: linear-gradient(to right, #530620, #a42134, #ec272d, #f06964);
+}
+
+h1 {
+    text-align: center;
+}
+
+h2{
+    color:white;
+}
+
+h3{
+    color:white;
+}
+
+h4{
+    color:white;
+}
+
+.zoom-container {
+    width: 500px;
+    height: 500px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    border: 2px solid black;
+    background-color: #6A0010;
+}
+
+
+.image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    transition: transform 0.2s ease;
+    cursor: zoom-in;
+}
+
+#map {
+    height: 500px;
+    width: 500px;
+}
+
+.start {
+    background-color: #c26d79;
+    border: solid black;
+    color: rgb(0, 0, 0);
+    padding: 5px 10px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+input[type=checkbox] {
+    display: none;
+}
+
+input[type=checkbox]:checked ~ label > img {
+    transform: scale(1.5);
+}
+
+.inactive {
+    display: none;
+}
+
+.flex-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+}
+
+/* Make divs inside flex-container neat */
+.flex-container > div {
+    width: auto;
+    padding: 1rem;
+    border: 2px solid black;
+    color: white;
+    background-color: #6A0010;
+}
+
+@media (max-width: 768px) {
+    .flex-container {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .flex-container > div {
+        width: 50%;
+        text-align: left;
+        list-style-position: inside;
+    }
+}
+
+.map-container {
+    display: flex;
+    flex-direction: column;
+    height: 505px;
+    width: 500px;
+    border: 2px solid black;
+    background-color: rgb(241, 209, 167);
+    padding: 1rem;
+}
+
+.map-container button {
+    margin-top: 1rem;
+    align-self: center;
+    padding: 10px 20px;
+    font-size: 18px;
+    background-color: #c26d79;
+    color: black;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#score {
+    text-align: center;
+}
+/* ---------- NAVBAR ---------- */
+
+.navbar {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    padding: 15px;
+    background-color: rgba(0, 0, 0, 0.6);
+    border-bottom: 2px solid black;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.navbar a {
+    color: white;
+    text-decoration: none;
+    font-size: 18px;
+    font-weight: bold;
+    padding: 6px 12px;
+    border-radius: 6px;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.navbar a:hover {
+    background-color: #c26d79;
+    color: black;
+    transform: scale(1.1);
+}
+
+.navbar a.active {
+    background-color: #f06964;
+    color: black;
+}

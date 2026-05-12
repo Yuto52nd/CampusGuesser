@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Final Score</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='CG.css') }}">
+</head>
+<body>
+    <h1 class="mainTitle">Game Over!</h1>
+    <div class="flex-container">
+        <div>
+            <h2>Your final score: {{ score }} points</h2>
+            <a class="start" href="{{ url_for('home') }}">Back to Home</a>
+        </div>
+        <div>
+            <p>Thanks for playing! Try again to improve your score.</p>
+        </div>
+    </div>
+</body>
+</html>

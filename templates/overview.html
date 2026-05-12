@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Overview Map</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='CG.css') }}">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <style>
+        #map { height: 600px; width: 100%; }
+
+        .leaflet-popup-content {
+            margin: 5px;
+            width: auto !important;
+            max-width: none !important;
+        }
+
+        .leaflet-popup-content img {
+            display: block;
+            max-width: 200px;
+            height: auto;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="navbar">
+        <a href="{{ url_for('home') }}">Home</a>
+        <a href="{{ url_for('CGGAME') }}">Play</a>
+        <a href="{{ url_for('overview') }}">Overview</a>
+        <a href="{{ url_for('add_location') }}">Add Location</a>
+        
+    </div>
+    <h1>All Locations On File</h1>
+    <button onclick="window.location.href='{{ url_for('home') }}'">Back to Main Menu</button>
+    <button onclick="window.location.href='{{ url_for('add_location') }}'">Add New Location</button>
+
+    <br><br>
+
+    <div id="map"></div>
+
+    <script>
+        var map = L.map('map').setView([51.29659, 1.061731], 14);
+
+        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '&copy; OpenStreetMap'
+        }).addTo(map);
+
+        var markers = [];
+
+        {% for loc in locations %}
+            var marker = L.marker([{{ loc["lat"] }}, {{ loc["lng"] }}])
+                .addTo(map)
+                .bindPopup(`
+                    <b>ID:</b> {{ loc['id'] }}<br>
+
+                    <img src="{{ url_for('static', filename='images/' + loc['image']) }}"><br>
+
+                    <b>Lat:</b> {{ loc['lat'] }}<br>
+                    <b>Lng:</b> {{ loc['lng'] }}<br>
+                    <b>Description:</b> {{ loc['description'] }}<br><br>
+
+                    <form action="/delete/{{ loc['id'] }}" method="POST">
+                        <button type="submit">Delete</button>
+                    </form>
+                `)
+
+            markers.push(marker);
+        {% endfor %}
+
+        // Fit map to markers
+        if (markers.length > 0) {
+            var group = new L.featureGroup(markers);
+            map.fitBounds(group.getBounds());
+        }
+    </script>
+</body>
+</html>
