@@ -1,20 +1,32 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
+  <head>
+    <meta charset="UTF-8" />
     <title>Final Score</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='CG.css') }}">
-</head>
-<body>
+    <link rel="stylesheet" href="{{ url_for('static', filename='CG.css') }}" />
+  </head>
+  <body>
     <h1 class="mainTitle">Game Over!</h1>
     <div class="flex-container">
-        <div>
-            <h2>Your final score: {{ score }} points</h2>
-            <a class="start" href="{{ url_for('home') }}">Back to Home</a>
+      <div>
+        <h2>Your final score: {{ score }} points</h2>
+        <a class="start" href="{{ url_for('home') }}">Back to Home</a>
+        {% if share_url %}
+        <div class="share-box">
+          <p>Share this multiplayer match with a friend:</p>
+          <a class="start" href="{{ share_url }}" target="_blank"
+            >Copy or Open share link</a
+          >
+          <p class="small-text">
+            If you want to copy it, right-click the link and choose Copy Link
+            Address.
+          </p>
         </div>
-        <div>
-            <p>Thanks for playing! Try again to improve your score.</p>
-        </div>
+        {% endif %}
+      </div>
+      <div>
+        <p>Thanks for playing! Try again to improve your score.</p>
+      </div>
     </div>
-</body>
+  </body>
 </html>

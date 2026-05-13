@@ -208,14 +208,82 @@ def start_challenge(challenge_id):
     session["round"] = 0
     session["challenge_ids"] = CHALLENGES[challenge_id]
     session["used_ids"] = []
+    session["multiplayer_mode"] = False
 
     return redirect(url_for("CGGAME"))
+
+@app.route("/start_multiplayer")
+def start_multiplayer():
+    db = get_db()
+    rows = db.execute(
+        "SELECT id FROM locations ORDER BY RANDOM() LIMIT ?",
+        (MAX_ROUNDS,),
+    ).fetchall()
+    if len(rows) < MAX_ROUNDS:
+        return "Not enough locations to start multiplayer match", 400
+
+    challenge_ids = [row["id"] for row in rows]
+
+    session.clear()
+    session["score"] = 0
+    session["round"] = 0
+    session["challenge_ids"] = challenge_ids
+    session["used_ids"] = []
+    session["multiplayer_mode"] = True
+
+    return redirect(url_for("CGGAME"))
+
+@app.route("/multiplayer/<path:ids>")
+def multiplayer_link(ids):
+    try:
+        challenge_ids = [int(i) for i in ids.split(",") if i]
+    except ValueError:
+        return "Invalid multiplayer link", 400
+
+    if len(challenge_ids) != MAX_ROUNDS:
+        return "Invalid multiplayer match", 400
+
+    db = get_db()
+    placeholders = ",".join("?" * len(challenge_ids))
+    valid_rows = db.execute(
+        f"SELECT id FROM locations WHERE id IN ({placeholders})",
+        challenge_ids,
+    ).fetchall()
+    if len(valid_rows) != len(challenge_ids):
+        return "Invalid multiplayer match", 404
+
+    shared_score = request.args.get("score")
+
+    session.clear()
+    session["score"] = 0
+    session["round"] = 0
+    session["challenge_ids"] = challenge_ids
+    session["used_ids"] = []
+    session["multiplayer_mode"] = True
+    session["shared_score"] = shared_score
+
+    return render_template(
+        "multiplayer.html",
+        ids_str=ids,
+        shared_score=shared_score,
+        max_rounds=MAX_ROUNDS,
+    )
 
 
 #takes to final page
 @app.route("/final")
 def final_score():
-    return render_template("final.html", score=session["score"])
+    share_url = None
+    if session.get("multiplayer_mode") and session.get("challenge_ids"):
+        ids = ",".join(str(i) for i in session["challenge_ids"])
+        share_url = url_for(
+            "multiplayer_link",
+            ids=ids,
+            score=session["score"],
+            _external=True,
+        )
+
+    return render_template("final.html", score=session["score"], share_url=share_url)
 
 #Euclidian distance 
 def eucal(lat1, lon1, lat2, lon2):

@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Multiplayer Match</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='CG.css') }}" />
+  </head>
+  <body>
+    <h1 class="mainTitle">Multiplayer Match</h1>
+    <div class="flex-container">
+      <div>
+        {% if shared_score %}
+        <h2>
+          You were invited to a match with a score of {{ shared_score }} points.
+        </h2>
+        <p>Play the same 5 images and try to beat their score.</p>
+        {% else %}
+        <h2>Join the shared match.</h2>
+        <p>Play the same 5 locations as the person who shared this link.</p>
+        {% endif %}
+        <a class="start" href="{{ url_for('CGGAME') }}">Start Match</a>
+        <a class="start" href="{{ url_for('home') }}">Back to Home</a>
+      </div>
+    </div>
+  </body>
+</html>
